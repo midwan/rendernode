@@ -1,0 +1,27 @@
+; $VER: StartNode 1.4 (2020-06-07)
+; created by Dimitris Panokostas (dimitris@blitterstudio.com)
+;
+; This AmigaDOS script starts up the Lightwave ScreamerNet-II program with the right parameters
+; It will automatically increment the node number until it finds one that is not used already.
+;
+
+ECHO "********************************************"
+ECHO "Lightwave ScreamerNet-II node script v1.4 starting..."
+ECHO "Lightwave command directory to use: Command:"
+ECHO "********************************************"
+SetEnv NodeNumber 1
+
+LAB MakeName
+If Exists Command:ack$NodeNumber
+	SetEnv NodeNumber `Eval $NodeNumber + 1`
+	SKIP MakeName Back
+EndIf
+
+Set jobNumber job$NodeNumber
+Set ackNumber ack$NodeNumber
+
+CD Toaster:
+LWSN.FP -2 -cToaster:LightWave_Support/LW-config Command:$jobNumber Command:$ackNumber
+
+; Quit emulator when ScreamerNet shuts down
+C:UAEquit
